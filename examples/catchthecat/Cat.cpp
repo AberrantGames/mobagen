@@ -125,30 +125,63 @@ Point2D Cat::Move(World* world) {
       pathCount++;
     }
 
-    for (int i = 0; i < path.size(); i++) {
-      std::cout << "Pos" << i << " " << path[i].x << " " << path[i].y << std::endl;
-    }
+    //for (int i = 0; i < path.size(); i++) {
+    //  std::cout << "Pos" << i << " " << path[i].x << " " << path[i].y << std::endl;
+    //}
 
     return path[pathCount - 2];
   } 
   else {
-      auto rand = Random::Range(0, 5);
-    auto pos = world->getCat();
-      switch (rand) {
-        case 0:
-          return World::NE(pos);
-        case 1:
-          return World::NW(pos);
-        case 2:
-          return World::E(pos);
-        case 3:
-          return World::W(pos);
-        case 4:
-          return World::SW(pos);
-        case 5:
-          return World::SE(pos);
-        default:
-          throw "random out of range";
-      }
+      int rand;
+      Point2D pos = world->getCat();
+      Point2D newPos;
+      bool canMove = false;
+
+      do {
+        rand = Random::Range(0, 5);
+
+        switch (rand) {
+          case 0:
+            if (!world->getContent(World::NE(pos))) {
+              newPos = World::NE(pos);
+              canMove = true;
+            }
+            break;
+          case 1:
+            if (!world->getContent(World::NW(pos))) {
+              newPos = World::NW(pos);
+              canMove = true;
+            }
+            break;
+          case 2:
+            if (!world->getContent(World::E(pos))) {
+              newPos = World::E(pos);
+              canMove = true;
+            }
+            break;
+          case 3:
+            if (!world->getContent(World::W(pos))) {
+              newPos = World::W(pos);
+              canMove = true;
+            }
+            break;
+          case 4:
+            if (!world->getContent(World::SW(pos))) {
+              newPos = World::SW(pos);
+              canMove = true;
+            }
+            break;
+          case 5:
+            if (!world->getContent(World::SE(pos))) {
+              newPos = World::SE(pos);
+              canMove = true;
+            }
+            break;
+          default:
+            throw "random out of range";
+        }
+      } while (!canMove);
+
+      return newPos;
   }
 }
