@@ -2,6 +2,8 @@
 #define MOBAGEN_MAZEGENERATOR_H
 
 #include "MazeGeneratorBase.h"
+#include <map>
+#include <vector>
 
 // please do not use this one anymore. Move your code to the specific implementation.
 // I am going to rename this interface soon to be a naive implementation.
@@ -13,6 +15,16 @@ class MazeGenerator: public MazeGeneratorBase {
   bool Step(World * world);
   // Clears and resets all data from the generator
   void Clear(World * world);
+
+  Point2D randomPoint(World* world);
+  std::vector<Point2D> getNeighbors(World* world, const Point2D& point);
+
+  //list of neighboring points yet to be visited
+  std::vector<Point2D> cells;
+  //list for what is already visited
+  std::map<int, std::map<int, bool>> visited;
+  //bool for if the maze is blank or not
+  bool isFirstStep = true;
 };
 
 #endif
