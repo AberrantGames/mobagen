@@ -2,6 +2,7 @@
 #define MOBAGEN_MAZEGENERATOR_H
 
 #include "MazeGeneratorBase.h"
+#include "Point2D.h"
 #include <map>
 #include <vector>
 
@@ -12,14 +13,13 @@ class MazeGenerator: public MazeGeneratorBase {
   std::string GetName() override {return "deprecated";};
   // todo: in order to step work properly, you have to store your current exploration status in the MazeGenerator members
   // Steps should return true if it made changes in the world
-  bool Step(World * world);
-  // Clears and resets all data from the generator
-  void Clear(World * world);
+  bool Step(World* world) override;
+  void Clear(World* world) override;
 
   Point2D randomPoint(World* world);
   std::vector<Point2D> getNeighbors(World* world, const Point2D& point);
 
-  //list of neighboring points yet to be visited
+  //list of points visited
   std::vector<Point2D> cells;
   //list for what is already visited
   std::map<int, std::map<int, bool>> visited;

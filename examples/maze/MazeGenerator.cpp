@@ -26,7 +26,8 @@ bool MazeGenerator::Step(World* world) {
 
 		if (neighbors.empty()) {
 			world->SetNodeColor(newPoint, Color::Black);
-			cells.erase(randIndex);
+			cells.erase(cells.begin()+randIndex);
+
 			return true;
 		}
 		else {
@@ -35,18 +36,8 @@ bool MazeGenerator::Step(World* world) {
 
 			cells.push_back(randNeighbor);
 			visited[randNeighbor.x][randNeighbor.y] = true;
-			world->SetNodeColor(startPoint, Color::Red.Dark());
+			world->SetNodeColor(randNeighbor, Color::Red.Dark());
 
-			//auto delta = next - current;
-            //            // remove walls
-            //            if (delta.y == -1)  // north
-            //              w->SetNorth(current, false);
-            //            else if (delta.x == 1)  // east
-            //              w->SetEast(current, false);
-            //            else if (delta.y == 1)  // south
-            //              w->SetSouth(current, false);
-            //            else if (delta.x == -1)  // west
-            //              w->SetWest(current, false);
 			auto delta = randNeighbor - newPoint;
 			if (delta.y == -1) {
 				world->SetNorth(newPoint, false);
@@ -80,13 +71,17 @@ bool MazeGenerator::Step(World* world) {
   return false;
 }
 
-void MazeGenerator::Clear(World* world) {}
+void MazeGenerator::Clear(World* world) {
+  cells.clear();
+  visited.clear();
+  isFirstStep = true;
+}
 
 Point2D MazeGenerator::randomPoint(World* world) {
   auto gridSize = world->GetSize() / 2;
 
   for (int y = -gridSize; y <= gridSize; y++) {
-    for (int x = -sideOver2; x <= sideOver2; x++) {
+    for (int x = -gridSize; x <= gridSize; x++) {
       if (!visited[y][x]) {
         return {x, y};
       }
@@ -103,19 +98,19 @@ std::vector<Point2D> MazeGenerator::getNeighbors(World* world, const Point2D& po
   // Checks for each direction if inside the board, if its been visited, if there is a wall
 	//If any of these are not viable then it is not added to the list of viable neighbors
   // North Neighbor
-  if ((abs(point.x) <= gridSize && abs(point.y - 1) <= gridSize) && !visited[point.y - 1][point.x] && world->GetNorth({ point.x, point.y - 1 })) {
+  if ((abs(point.x) <= gridSize && abs(point.y - 1) <= gridSize) && !visited[point.x][point.y - 1] && world->GetNorth({ point.x, point.y - 1 })) {
     neighbors.emplace_back(point.x, point.y - 1);
   }
   // East Neighbor
-  if ((abs(point.x + 1) <= gridSize && abs(point.y) <= gridSize) && !visited[point.y][point.x + 1] && world->GetNorth({ point.x + 1, point.y })) {
+  if ((abs(point.x + 1) <= gridSize && abs(point.y) <= gridSize) && !visited[point.x + 1][point.y] && world->GetNorth({ point.x + 1, point.y })) {
     neighbors.emplace_back(point.x + 1, point.y);
   }
   // South Neighbor
-  if ((abs(point.x) <= gridSize && abs(point.y + 1) <= gridSize) && !visited[point.y + 1][point.x] && world->GetNorth({ point.x, point.y + 1 })) {
+  if ((abs(point.x) <= gridSize && abs(point.y + 1) <= gridSize) && !visited[point.x][point.y + 1] && world->GetNorth({ point.x, point.y + 1 })) {
     neighbors.emplace_back(point.x, point.y + 1);
   }
   // West Neighbor
-  if ((abs(point.x - 1) <= gridSize && abs(point.y) <= gridSize) && !visited[point.y][point.x - 1] && world->GetNorth({ point.x - 1, point.y })) {
+  if ((abs(point.x - 1) <= gridSize && abs(point.y) <= gridSize) && !visited[point.x - 1][point.y] && world->GetNorth({ point.x - 1, point.y })) {
     neighbors.emplace_back(point.x - 1, point.y);
   }
 
